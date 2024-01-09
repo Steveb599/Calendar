@@ -109,10 +109,16 @@ const EventModal = () => {
   //   setShowEventModal(false);
   // };
 
-  console.log('element', watch("label"))
+  // console.log('element', watch("label"))
+
+  const newOnSubmit = async (formValues: TMeetingSchema) => {
+  };
+
   return (
     <div className="event h-screen w-full fixed md:left-0 top-0 flex justify-center items-center z-10">
-      <form className="bg-white rounded-lg shadow-2xl md:w-1/4 w-full">
+      <form
+        onSubmit={handleSubmit(newOnSubmit)}
+        className="bg-white rounded-lg shadow-2xl md:w-1/4 w-full">
         <header className="bg-gray-100 px-4 py-2 flex justify-between items-center">
           <span className="text-gray-400">
             <AiOutlineMenu />
@@ -207,6 +213,17 @@ const EventModal = () => {
                 type="text"
                 {...register("notes")}
                 placeholder="הערות"
+                className="pt-3 border-0 text-gray-600  pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-200 flex items-center justify-center"
+              />
+            </div>
+            <div className="flex gap-x-2 text-center align-center">
+              <span className="text-gray-400">
+                <AiOutlineAlignLeft />
+              </span>
+              <input
+                type="text"
+                {...register("address")}
+                placeholder="כתובת"
                 className="pt-3 border-0 text-gray-600  pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-200 flex items-center justify-center"
               />
             </div>

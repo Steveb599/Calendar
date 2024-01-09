@@ -33,11 +33,11 @@ function DebounceSelect<
         setOptions([]);
         setLoading(true);
         const newOptions = await fetchOptions(value);
-  
+
         if (fetchId !== fetchRef.current) {
           return;
         }
-  
+
         setOptions(newOptions);
         setLoading(false);
       } catch (error) {
@@ -45,7 +45,7 @@ function DebounceSelect<
       }
     };
   }, [fetchOptions]);
-  
+
   const debouncedSelectSearch = useDebouncedCallback(
     loadOptions,
     debounceTimeout
