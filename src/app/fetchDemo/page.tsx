@@ -1,16 +1,21 @@
-"use client";
-import { useState } from "react";
-import DebounceSelect from "./fetchUsers";
-import { useForm, Control, FieldError } from "react-hook-form";
+'use client';
+import { useState } from 'react';
+import DebounceSelect from './fetchUsers';
+import { useForm, Controller, FieldError } from 'react-hook-form';
 
 interface UserValue {
   label: string;
   value: string;
 }
 
+interface selectRHFProps {
+  control: any;
+  name: string;
+}
+
 async function fetchUserList(username: string): Promise<UserValue[]> {
   try {
-    const response = await fetch("https://randomuser.me/api/?results=5");
+    const response = await fetch('https://randomuser.me/api/?results=5');
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -22,10 +27,10 @@ async function fetchUserList(username: string): Promise<UserValue[]> {
       }) => ({
         label: `${user.name.first} ${user.name.last}`,
         value: user.login.username,
-      })
+      }),
     );
   } catch (error) {
-    console.error("Error fetching user list:", error);
+    console.error('Error fetching user list:', error);
     throw error;
   }
 }
@@ -39,23 +44,38 @@ const SelectTrainees = () => {
     formState: { errors },
   } = useForm();
 
-  const debouncedControl = control as Control;
+  const RHFDebouncedSelect = (props: selectRHFProps) => {
+    return (
+      <>
+        <Controller
+          control={props.control}
+          name={props.name}
+          render={({ field }) => (
+            <>
+              <DebounceSelect
+                mode="multiple"
+                className="w-full"
+                value={value}
+                placeholder="תבחר מתאמנים"
+                fetchOptions={fetchUserList}
+                onChange={(newValue) => {
+                  field.onChange(newValue);
+                  setValue(newValue as UserValue[]);
+                }}
+              />
+              {errors.trainees && (
+                <div>{(errors.trainees as FieldError).message}</div>
+              )}
+            </>
+          )}
+        />
+      </>
+    );
+  };
 
   return (
     <div className="p-16">
-      <DebounceSelect
-        mode="multiple"
-        {...(debouncedControl as any)}
-        name="trainees"
-        className="w-full"
-        value={value}
-        placeholder="תבחר מתאמנים"
-        fetchOptions={fetchUserList}
-        onChange={(newValue) => {
-          setValue(newValue as UserValue[]);
-        }}
-      />
-      {errors.trainees && (errors.trainees as FieldError).message}
+      <RHFDebouncedSelect control={control} name="trainees" />
     </div>
   );
 };

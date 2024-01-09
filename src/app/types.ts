@@ -12,7 +12,12 @@ export interface CalendarEvent {
   meetingType: "Nutrition" | "Training" | "Nutrition and training";
   online?: "Zoom" | "Skype" | "WhatsApp" | "Facebook" | "Instagram";
   address?: string;
-  time: Dayjs;
+  startDate: Dayjs;
+}
+
+export interface RHFTimePickerProps {
+  control: any;
+  name: string;
 }
 
 export interface GlobalContextProps {

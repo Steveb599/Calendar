@@ -9,13 +9,13 @@ import {
   AiOutlineMenu,
 } from "react-icons/ai";
 import GlobalContext from "../context/GlobalContext";
-import { TimePicker } from "antd";
+import { Select, TimePicker } from "antd";
 import dayjs from "dayjs";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, Field } from "react-hook-form";
 import { TMeetingSchema, meetingSchema } from "../zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { RHFTimePickerProps } from "../types";
+import { RHFElementProps } from "../types";
 import { translateDay } from "../util";
 
 const hexCodes: Record<string, string> = {
@@ -54,24 +54,24 @@ const EventModal = () => {
     resolver: zodResolver(meetingSchema),
     defaultValues: selectedEvent
       ? {
-          startDate: selectedEvent.startDate,
-          title: selectedEvent.title,
-          trainees: selectedEvent.trainees,
-          duration: selectedEvent.duration,
-          label: selectedEvent.label,
-          type: selectedEvent.type,
-          address: selectedEvent.address,
-          online: selectedEvent.online,
-          notes: selectedEvent.notes,
-          meetingType: selectedEvent.meetingType,
-        }
+        startDate: selectedEvent.startDate,
+        title: selectedEvent.title,
+        trainees: selectedEvent.trainees,
+        duration: selectedEvent.duration,
+        label: selectedEvent.label,
+        type: selectedEvent.type,
+        address: selectedEvent.address,
+        online: selectedEvent.online,
+        notes: selectedEvent.notes,
+        meetingType: selectedEvent.meetingType,
+      }
       : {
-          startDate: dayjs(daySelected),
-          label: labelHexCodes[0],
-        },
+        startDate: dayjs(daySelected),
+        label: labelHexCodes[0],
+      },
   });
 
-  const RHFTimePicker = (props: RHFTimePickerProps) => {
+  const RHFElement = ({ props, Element }: RHFElementProps) => {
     return (
       <Controller
         control={props.control}
@@ -79,19 +79,9 @@ const EventModal = () => {
         render={({ field }) => {
           return (
             <>
-              <TimePicker
-                format="HH:mm"
-                minuteStep={15}
-                ref={field.ref}
-                className="w-full"
-                name={field.name}
-                value={field.value}
-                onSelect={(time) => {
-                  field.onChange(time);
-                }}
-              />
-              {errors.startDate && (
-                <div className={errorStyle}>{errors.startDate.message}</div>
+              <Element field={field} />
+              {errors[props.name] && (
+                <div className={errorStyle}>{errors[props.name]?.message}</div>
               )}
             </>
           );
@@ -119,6 +109,7 @@ const EventModal = () => {
   //   setShowEventModal(false);
   // };
 
+  console.log('element', watch("label"))
   return (
     <div className="event h-screen w-full fixed md:left-0 top-0 flex justify-center items-center z-10">
       <form className="bg-white rounded-lg shadow-2xl md:w-1/4 w-full">
@@ -166,10 +157,46 @@ const EventModal = () => {
                   <AiOutlineClockCircle className="text-gray-400" />
                   זמן הפגישה
                 </p>
-                <RHFTimePicker control={control} name="startDate" />
+                <RHFElement
+                  props={{
+                    name: "startDate",
+                    control: control,
+                  }}
+                  Element={({ field }) => (
+                    <TimePicker
+                      format="HH:mm"
+                      minuteStep={15}
+                      ref={field.ref}
+                      className="w-full"
+                      name={field.name}
+                      value={field.value}
+                      onSelect={(time) => {
+                        field.onChange(time);
+                      }}
+                    />
+                  )}
+                />
               </div>
               <div className="flex justify-between">
-                <p>אורך הפגישה</p>
+                <p>סוג הפגישה</p>
+                <RHFElement
+                  props={{
+                    name: "type",
+                    control: control,
+                  }}
+                  Element={({ field }) => (
+                    <Select
+                      style={{ width: 120 }}
+                      allowClear
+                      value={field.value}
+                      onSelect={(type) => {
+                        field.onChange(type)
+                      }}
+                      options={[{ value: 'In person', label: 'פנים מול פנים' }, { value: 'Online', label: 'אונליין' }]}
+                      placeholder=""
+                    />
+                  )}
+                />
               </div>
             </div>
             <div className="flex gap-x-2 text-center align-center">
@@ -208,13 +235,12 @@ const EventModal = () => {
         <footer className="flex justify-end md:w-full border-t p-3 mt-5">
           <button
             type="submit"
-            className={`${
-              watch("title") && watch("notes")
-                ? "bg-blue-100 hover:bg-blue-600"
-                : "bg-blue-500"
-            }  px-6 py-2 rounded text-white`}
+            className={`${watch("title") && watch("notes")
+              ? "bg-blue-100 hover:bg-blue-600"
+              : "bg-blue-500"
+              }  px-6 py-2 rounded text-white`}
             disabled={isSubmitting}
-            // onClick={(e) => handleSubmit(e)}
+          // onClick={(e) => handleSubmit(e)}
           >
             שמור
           </button>
