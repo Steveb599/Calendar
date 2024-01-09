@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/components/EventModal.jsx", "src/app/components/Month/Day.jsx", "src/app/components/Month/Day.jsx", "src/app/components/Week/Week.jsx"],
   "exclude": ["node_modules"]
 }
