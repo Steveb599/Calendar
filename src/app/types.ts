@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs";
+import { FieldValues } from "react-hook-form";
 
 export interface CalendarEvent {
   id: number | string;
@@ -15,9 +16,12 @@ export interface CalendarEvent {
   startDate: Dayjs;
 }
 
-export interface RHFTimePickerProps {
-  control: any;
-  name: string;
+export interface RHFElementProps {
+  props: {
+    control: any;
+    name: "startDate" | "title" | "trainees" | "duration" | "label" | "type" | "address" | "online" | "notes" | "meetingType";
+  };
+  Element: React.FC<{ field: FieldValues }>;
 }
 
 export interface GlobalContextProps {
